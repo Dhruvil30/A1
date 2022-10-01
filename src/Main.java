@@ -33,5 +33,7 @@ public class Main {
         key.put('Z', 'A');
         SubstitutionCipher obj = new SubstitutionCipher("Random Name", key);
         System.out.println(obj.keyIsValid());
+        System.out.println(obj.cipherText("ABCD EFG"));
+        System.out.println(obj.decodeText());
     }
 }

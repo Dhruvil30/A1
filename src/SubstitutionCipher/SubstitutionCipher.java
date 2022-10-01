@@ -5,7 +5,7 @@ import java.io.*;
 public class SubstitutionCipher {
     private HashMap<Character, Character> key;
     private String name;
-    private String decryptedText;
+    private String decryptedText = "";
 
     private char[] validKeyValues = {
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
@@ -32,6 +32,22 @@ public class SubstitutionCipher {
     }
 
     public boolean cipherText(String encryptedText) {
+        if (!keyIsValid()) return false;
+        for (int i = 0; i < encryptedText.length(); i++) {
+            char encryptedLetter = Character.toUpperCase((encryptedText.charAt(i)));
+            if (key.get(encryptedLetter) != null) {
+                char decryptedLetter = key.get(encryptedLetter);
+                decryptedText += decryptedLetter;
+            } else {
+                decryptedText += encryptedLetter;
+            }
+        }
+        return true;
+    }
 
+    public String decodeText() {
+        if (!keyIsValid()) return "Please provide valid key.";
+        if (decryptedText == "") return "Please provide cipher text.";
+        return decryptedText;
     }
 }
