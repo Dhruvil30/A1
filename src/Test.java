@@ -1,12 +1,8 @@
 import SubstitutionCipher.SubstitutionCipher;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.*;
 
-public class Main {
+public class Test {
     public static void main(String[] args) {
         HashMap<Character, Character>key = new HashMap<>();
         key.put('A', 'B');
@@ -35,20 +31,12 @@ public class Main {
         key.put('X', 'Y');
         key.put('Y', 'Z');
         key.put('Z', 'A');
-        SubstitutionCipher obj = new SubstitutionCipher("Random Name", key);
-        System.out.println(obj.keyIsValid());
 
-        String cipherText = "";
-        try {
-            File cipherTextFile = new File("cipherText.txt");
-            Scanner sc = new Scanner(cipherTextFile);
-            while (sc.hasNextLine()) {
-                cipherText += sc.nextLine();
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-        }
-        System.out.println(obj.cipherText(cipherText));
-        System.out.println(obj.decodeText());
+        // Input validation
+        SubstitutionCipher testObj = new SubstitutionCipher(null, null);
+//        SubstitutionCipher obj = new SubstitutionCipher("Random Name", key);
+//        System.out.println(obj.keyIsValid());
+//        System.out.println(obj.cipherText("ABCD EFG"));
+//        System.out.println(obj.decodeText());
     }
 }
