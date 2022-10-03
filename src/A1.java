@@ -1,7 +1,5 @@
 import SubstitutionCipher.SubstitutionCipher;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class A1 {
@@ -37,5 +35,7 @@ public class A1 {
         System.out.println(obj.keyIsValid());
         System.out.println(obj.cipherText("cipherText.txt"));
         System.out.println(obj.decodeText());
+        System.out.println(obj.originalLanguage("English", "english.txt"));
+        System.out.println(obj.originalLanguage("French", "french.txt"));
     }
 }

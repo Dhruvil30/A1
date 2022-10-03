@@ -7,6 +7,7 @@ public class SubstitutionCipher {
     private HashMap<Character, Character> key;
     private String name;
     private String decryptedText = "";
+    private HashMap<String, HashMap<Character, Double>> languageFreqTable = new HashMap<>();
 
     // Character array to validate key.
     private char[] validKeyValues = {
@@ -24,18 +25,33 @@ public class SubstitutionCipher {
         return false;
     }
 
+    private HashMap<Character, Double> getDefaultLoadedFreqHashTable() {
+        HashMap<Character, Double> hashMap = new HashMap<>();
+        for (int i = 0; i < validKeyValues.length; i++) {
+            hashMap.put(validKeyValues[i], 0.0);
+        }
+        return hashMap;
+    }
+
+    private boolean validateLetter(Character letter) {
+        for (int i = 0; i < validKeyValues.length; i++) {
+            if (letter.equals(validKeyValues[i])) return true;
+        }
+        return false;
+    }
+
     private String readFile(String filename) {
-        String cipherText = "";
+        String fileText = "";
         try {
-            File cipherTextFile = new File("cipherText.txt");
+            File cipherTextFile = new File(filename);
             Scanner sc = new Scanner(cipherTextFile);
             while (sc.hasNextLine()) {
-                cipherText += sc.nextLine();
+                fileText += sc.nextLine();
             }
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         }
-        return cipherText;
+        return fileText;
     }
 
     // Constructor
@@ -82,5 +98,31 @@ public class SubstitutionCipher {
         if (!keyIsValid()) return "Please provide valid key.";
         if (decryptedText == "") return "Please provide cipher text.";
         return decryptedText;
+    }
+
+    public Boolean originalLanguage(String name, String fileName) {
+        String languageText = readFile(fileName);
+        HashMap<Character, Integer> letterFreq = new HashMap<>();
+        for (int i = 0; i < languageText.length(); i++) {
+            char letter = Character.toUpperCase(languageText.charAt(i));
+            if (validateLetter(letter)) {
+                if (letterFreq.containsKey(letter)) {
+                    Integer freq = letterFreq.get(letter) + 1;
+                    letterFreq.put(letter, freq);
+                } else {
+                    letterFreq.put(letter, 1);
+                }
+            }
+        }
+        HashMap<Character, Double>freqTableForLanguage = getDefaultLoadedFreqHashTable();
+        for (int i = 0; i < validKeyValues.length; i++) {
+            if (letterFreq.containsKey(validKeyValues[i])) {
+                char letter = validKeyValues[i];
+                Double freqValue = Double.valueOf(letterFreq.get(letter)) / Double.valueOf(languageText.length());
+                freqTableForLanguage.put(letter, freqValue);
+            }
+        }
+        languageFreqTable.put(name, freqTableForLanguage);
+        return true;
     }
 }
