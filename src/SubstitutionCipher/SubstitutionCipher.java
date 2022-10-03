@@ -1,6 +1,5 @@
 package SubstitutionCipher;
 import java.util.*;
-import java.io.*;
 
 public class SubstitutionCipher {
     private HashMap<Character, Character> key;
@@ -26,8 +25,6 @@ public class SubstitutionCipher {
     // Constructor
     public SubstitutionCipher(String name, HashMap<Character, Character>key) {
         if (validateNullArguments(name) || validateNullArguments(key)) return;
-        validateNullArguments(name);
-        validateNullArguments(key);
         this.key = key;
         this.name = name;
     }

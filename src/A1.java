@@ -1,12 +1,10 @@
 import SubstitutionCipher.SubstitutionCipher;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.*;
 
-public class Main {
+public class A1 {
     public static void main(String[] args) {
         HashMap<Character, Character>key = new HashMap<>();
         key.put('A', 'B');
