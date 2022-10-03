@@ -35,18 +35,7 @@ public class A1 {
         key.put('Z', 'A');
         SubstitutionCipher obj = new SubstitutionCipher("Random Name", key);
         System.out.println(obj.keyIsValid());
-
-        String cipherText = "";
-        try {
-            File cipherTextFile = new File("cipherText.txt");
-            Scanner sc = new Scanner(cipherTextFile);
-            while (sc.hasNextLine()) {
-                cipherText += sc.nextLine();
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-        }
-        System.out.println(obj.cipherText(cipherText));
+        System.out.println(obj.cipherText("cipherText.txt"));
         System.out.println(obj.decodeText());
     }
 }

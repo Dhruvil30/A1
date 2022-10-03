@@ -1,4 +1,6 @@
 package SubstitutionCipher;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class SubstitutionCipher {
@@ -20,6 +22,20 @@ public class SubstitutionCipher {
             return true;
         }
         return false;
+    }
+
+    private String readFile(String filename) {
+        String cipherText = "";
+        try {
+            File cipherTextFile = new File("cipherText.txt");
+            Scanner sc = new Scanner(cipherTextFile);
+            while (sc.hasNextLine()) {
+                cipherText += sc.nextLine();
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        }
+        return cipherText;
     }
 
     // Constructor
@@ -46,7 +62,8 @@ public class SubstitutionCipher {
 
     // The encrypted text is decrypted and stored in a variable if the key is valid.
     // The method returns true if the cypher text can be successfully decrypted and false otherwise.
-    public boolean cipherText(String encryptedText) {
+    public boolean cipherText(String fileName) {
+        String encryptedText = readFile(fileName);
         if (validateNullArguments(encryptedText) || !keyIsValid()) return false;
         for (int i = 0; i < encryptedText.length(); i++) {
             char encryptedLetter = Character.toUpperCase((encryptedText.charAt(i)));
