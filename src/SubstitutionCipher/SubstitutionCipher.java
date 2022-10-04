@@ -152,10 +152,30 @@ public class SubstitutionCipher {
         return encryptionKey;
     }
 
+    // Return the response language from the language frequency table
     public String matchLanguage(String filenname) {
         String fileText = readFile(filenname);
         HashMap<Character, Double>letterFreq = generateLetterFreq(fileText);
+        HashMap<String, Double>languageDifference = new HashMap<>();
         System.out.println(letterFreq);
-        return "Testing";
+        Object[] keyArray = languageFreqTable.keySet().toArray();
+        String resposeLanguage = "";
+        Double closestDiff = 10.0;
+        for (int i = 0; i < keyArray.length; i++) {
+            HashMap<Character, Double>languageLetterFreq = languageFreqTable.get(keyArray[i]);
+            Double diffrenceCount = 0.0;
+            for (int j = 0; j < validKeyValues.length; j++) {
+                Double diffrence = languageLetterFreq.get(validKeyValues[j]) - letterFreq.get(validKeyValues[j]);
+                diffrenceCount += Math.abs(diffrence);
+            }
+            if (diffrenceCount <= closestDiff) resposeLanguage = keyArray[i].toString();
+        }
+        return resposeLanguage;
     }
+
+    // This method is yet to be implemented
+    public Boolean guessKeyFromFrequencies(String language) { return false; }
+
+    // This method is yet to be implemented
+    public Boolean setDecodeLetter(Character plainLetter, Character cipherLetter) { return false; }
 }
