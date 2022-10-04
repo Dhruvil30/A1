@@ -4,7 +4,8 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class SubstitutionCipher {
-    private HashMap<Character, Character> key;
+    private HashMap<Character, Character> encryptionKey;
+    private HashMap<Character, Character> decryptionKey;
     private String name;
     private String decryptedText = "";
     private HashMap<String, HashMap<Character, Double>> languageFreqTable = new HashMap<>();
@@ -25,6 +26,17 @@ public class SubstitutionCipher {
         return false;
     }
 
+    // Generate decryption key from provided encryption key
+    private HashMap<Character, Character> generateDecryptionKey(HashMap<Character, Character>key) {
+        HashMap<Character, Character>resKey = new HashMap<>();
+        Object[] keyArray = key.keySet().toArray();
+        for (int i = 0; i < keyArray.length; i++) {
+            Character letter = key.get(keyArray[i]);
+            resKey.put(letter, keyArray[i].toString().charAt(0));
+        }
+        return resKey;
+    }
+
     private HashMap<Character, Double> getDefaultLoadedFreqHashTable() {
         HashMap<Character, Double> hashMap = new HashMap<>();
         for (int i = 0; i < validKeyValues.length; i++) {
@@ -40,6 +52,7 @@ public class SubstitutionCipher {
         return false;
     }
 
+    // Read the text file
     private String readFile(String filename) {
         String fileText = "";
         try {
@@ -54,23 +67,50 @@ public class SubstitutionCipher {
         return fileText;
     }
 
+    private HashMap<Character, Double> generateLetterFreq(String text) {
+        HashMap<Character, Integer> letterFreq = new HashMap<>();
+        for (int i = 0; i < text.length(); i++) {
+            char letter = Character.toUpperCase(text.charAt(i));
+            if (validateLetter(letter)) {
+                if (letterFreq.containsKey(letter)) {
+                    Integer freq = letterFreq.get(letter) + 1;
+                    letterFreq.put(letter, freq);
+                } else {
+                    letterFreq.put(letter, 1);
+                }
+            }
+        }
+        HashMap<Character, Double>freqTableForLanguage = getDefaultLoadedFreqHashTable();
+        for (int i = 0; i < validKeyValues.length; i++) {
+            if (letterFreq.containsKey(validKeyValues[i])) {
+                char letter = validKeyValues[i];
+                Double freqValue = Double.valueOf(letterFreq.get(letter)) / Double.valueOf(text.length());
+                freqTableForLanguage.put(letter, freqValue);
+            }
+        }
+        return freqTableForLanguage;
+    }
+
     // Constructor
     public SubstitutionCipher(String name, HashMap<Character, Character>key) {
         if (validateNullArguments(name) || validateNullArguments(key)) return;
-        this.key = key;
+        this.encryptionKey = key;
+        this.decryptionKey = generateDecryptionKey(key);
         this.name = name;
+        System.out.println(encryptionKey);
+        System.out.println(decryptionKey);
     }
 
     // The method verifies whether the key is valid or not.
     // The key should be of the map type, and the key value pair needs to have all 26 distinctive characters to be valid.
     public boolean keyIsValid() {
-        if (key.isEmpty()) return false;
+        if (encryptionKey.isEmpty()) return false;
         else {
-            Object[] keyArray = key.keySet().toArray();
-            Object[] valueArray = key.values().toArray();
+            Object[] keyArray = encryptionKey.keySet().toArray();
+            Object[] valueArray = encryptionKey.values().toArray();
             if (validKeyValues.length != keyArray.length || validKeyValues.length != valueArray.length) return false;
             for (int i = 0; i < validKeyValues.length; i++) {
-                if (!key.containsKey(validKeyValues[i]) || !key.containsValue(validKeyValues[i])) return false;
+                if (!encryptionKey.containsKey(validKeyValues[i]) || !encryptionKey.containsValue(validKeyValues[i])) return false;
             }
         }
         return true;
@@ -83,8 +123,8 @@ public class SubstitutionCipher {
         if (validateNullArguments(encryptedText) || !keyIsValid()) return false;
         for (int i = 0; i < encryptedText.length(); i++) {
             char encryptedLetter = Character.toUpperCase((encryptedText.charAt(i)));
-            if (key.get(encryptedLetter) != null) {
-                char decryptedLetter = key.get(encryptedLetter);
+            if (decryptionKey.get(encryptedLetter) != null) {
+                char decryptedLetter = decryptionKey.get(encryptedLetter);
                 decryptedText += decryptedLetter;
             } else {
                 decryptedText += encryptedLetter;
@@ -102,27 +142,20 @@ public class SubstitutionCipher {
 
     public Boolean originalLanguage(String name, String fileName) {
         String languageText = readFile(fileName);
-        HashMap<Character, Integer> letterFreq = new HashMap<>();
-        for (int i = 0; i < languageText.length(); i++) {
-            char letter = Character.toUpperCase(languageText.charAt(i));
-            if (validateLetter(letter)) {
-                if (letterFreq.containsKey(letter)) {
-                    Integer freq = letterFreq.get(letter) + 1;
-                    letterFreq.put(letter, freq);
-                } else {
-                    letterFreq.put(letter, 1);
-                }
-            }
-        }
-        HashMap<Character, Double>freqTableForLanguage = getDefaultLoadedFreqHashTable();
-        for (int i = 0; i < validKeyValues.length; i++) {
-            if (letterFreq.containsKey(validKeyValues[i])) {
-                char letter = validKeyValues[i];
-                Double freqValue = Double.valueOf(letterFreq.get(letter)) / Double.valueOf(languageText.length());
-                freqTableForLanguage.put(letter, freqValue);
-            }
-        }
-        languageFreqTable.put(name, freqTableForLanguage);
+        HashMap<Character, Double> letterFreq = generateLetterFreq(languageText);
+        languageFreqTable.put(name, letterFreq);
         return true;
+    }
+
+    // Returns the encryption key being used
+    public HashMap<Character, Character> getKey() {
+        return encryptionKey;
+    }
+
+    public String matchLanguage(String filenname) {
+        String fileText = readFile(filenname);
+        HashMap<Character, Double>letterFreq = generateLetterFreq(fileText);
+        System.out.println(letterFreq);
+        return "Testing";
     }
 }

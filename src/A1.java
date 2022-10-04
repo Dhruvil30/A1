@@ -37,5 +37,7 @@ public class A1 {
         System.out.println(obj.decodeText());
         System.out.println(obj.originalLanguage("English", "english.txt"));
         System.out.println(obj.originalLanguage("French", "french.txt"));
+        System.out.println(obj.getKey());
+        System.out.println(obj.matchLanguage("cipherText.txt"));
     }
 }
